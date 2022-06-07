@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { graphqlHTTP } = require('express-graphql');
-const GraphQLSchema = require("graphql").GraphQLSchema;
+const GraphQLSchema = require('./graphql/schema');
+const GraphQLResolvers =  require('./graphql/resolvers');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -17,7 +18,8 @@ connect.then((db) => {
 const app = express();
 
 app.use('/graphql', graphqlHTTP({
-    schema: new GraphQLSchema({}),
+    schema: GraphQLSchema,
+    rootValue: GraphQLResolvers,
     graphiql: true
 }));
 
@@ -26,5 +28,5 @@ app.use(bodyParser.json());
 app.use('*', cors());
 
 app.listen({ port: 4000 }, () => {
-    console.log(`Server ready at http://localhost:4000${server.graphqlPath}`);
+    console.log(`Server ready at http://localhost:4000${app.graphqlPath}`);
 })
